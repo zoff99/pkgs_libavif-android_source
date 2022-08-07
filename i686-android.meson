@@ -1,0 +1,16 @@
+[binaries]
+c = 'i686-linux-android16-clang'
+cpp = 'i686-linux-android16-clang++'
+ar = 'i686-linux-android-ar'
+strip = 'i686-linux-android-strip'
+pkgconfig = 'pkg-config'
+windres = 'i686-linux-android16-windres'
+
+[properties]
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'android'
+cpu_family = 'x86'
+endian = 'little'
+cpu = 'i686'

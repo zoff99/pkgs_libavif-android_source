@@ -89,6 +89,9 @@ for i in ${!pkgs_name} ; do
     fi
 done
 
+#------------------------
+
+set -Eeuo pipefail
 
 #------------------------
 
@@ -101,11 +104,6 @@ unzip ndk.zip
 
 export ANDROID_NDK_HOME=/workspace/ndk/android-ndk-r21e/
 export ANDROID_NDK_ROOT=$ANDROID_NDK_HOME
-
-#export PATH=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/:\
-#  $ANDROID_NDK_HOME/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/:$PATH
-#meson build --buildtype release --cross-file=package/crossfiles/x86_64-android.meson --default-library=static
-
 export PATH=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH
 
 # --------------------------------------------------------------------------------------------
@@ -150,17 +148,65 @@ cp -av /workspace/build/dav1d/build/src/libdav1d.a /workspace/jni/armeabi-v7a/li
 
 # --------------------------------------------------------------------------------------------
 
+rm -Rf /workspace/build/dav1d/
+cd /workspace/build/
+git clone https://code.videolan.org/videolan/dav1d
+cd dav1d/
+git checkout "$DAV1D_VERSION"
+
+cd /workspace/build/dav1d/
+
+meson build --buildtype release --cross-file=/workspace/build/i686-android.meson --default-library=static
+
+cd build
+ninja
+
+ls -al /workspace/build/dav1d/build/src/libdav1d.a
+file /workspace/build/dav1d/build/src/libdav1d.a
+mkdir -p /workspace/jni/x86/
+cp -av /workspace/build/dav1d/build/src/libdav1d.a /workspace/jni/x86/libdav1d.a
+
+# --------------------------------------------------------------------------------------------
+
+rm -Rf /workspace/build/dav1d/
+cd /workspace/build/
+git clone https://code.videolan.org/videolan/dav1d
+cd dav1d/
+git checkout "$DAV1D_VERSION"
+
+cd /workspace/build/dav1d/
+
+meson build --buildtype release --cross-file=/workspace/build/x86_64-android.meson --default-library=static
+
+cd build
+ninja
+
+ls -al /workspace/build/dav1d/build/src/libdav1d.a
+file /workspace/build/dav1d/build/src/libdav1d.a
+mkdir -p /workspace/jni/x86_64/
+cp -av /workspace/build/dav1d/build/src/libdav1d.a /workspace/jni/x86_64/libdav1d.a
+
+# --------------------------------------------------------------------------------------------
+
 cd /workspace/build/
 
-# cp -av /workspace/build/2/jni/x86/libdav1d.a
-# cp -av /workspace/build/2/jni/x86_64/libdav1d.a
+cp -av /workspace/jni/x86/libdav1d.a /workspace/build/2/jni/x86/libdav1d.a
+cp -av /workspace/jni/x86_64/libdav1d.a /workspace/build/2/jni/x86_64/libdav1d.a
 cp -av /workspace/jni/arm64-v8a/libdav1d.a /workspace/build/2/jni/arm64-v8a/libdav1d.a
 cp -av /workspace/jni/armeabi-v7a/libdav1d.a /workspace/build/2/jni/armeabi-v7a/libdav1d.a
 
+ls -al /workspace/build/2/jni/x86/libdav1d.a
+ls -al /workspace/build/2/jni/x86_64/libdav1d.a
 ls -al /workspace/build/2/jni/arm64-v8a/libdav1d.a
 ls -al /workspace/build/2/jni/armeabi-v7a/libdav1d.a
+
+chmod 0644 /workspace/build/2/jni/x86/libdav1d.a
+chmod 0644 /workspace/build/2/jni/x86_64/libdav1d.a
 chmod 0644 /workspace/build/2/jni/arm64-v8a/libdav1d.a
 chmod 0644 /workspace/build/2/jni/armeabi-v7a/libdav1d.a
+
+ls -al /workspace/build/2/jni/x86/libdav1d.a
+ls -al /workspace/build/2/jni/x86_64/libdav1d.a
 ls -al /workspace/build/2/jni/arm64-v8a/libdav1d.a
 ls -al /workspace/build/2/jni/armeabi-v7a/libdav1d.a
 
